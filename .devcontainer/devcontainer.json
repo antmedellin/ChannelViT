@@ -1,0 +1,102 @@
+{
+
+    "image" : "channelvit",
+
+    // this is similar to the docker compose file which can be used instead with: docker compose up
+
+    "mounts":[
+        // "source=${localWorkspaceFolder}/../../HyperWorkspace/HyperImages/LIB-HSI,target=/workspaces/LIB-HSI,type=bind,consistency=cached",
+        "source=${localWorkspaceFolder}/../so2sat,target=/workspaces/so2sat,type=bind,consistency=cached"
+
+    ],
+
+    "runArgs":[
+
+        "--gpus=all",
+        "-e", "HOST_UID=$(id -u)",
+        "-e", "HOST_GID=$(id -g)",
+        "--shm-size=90g",
+        "-m","30g"
+    ],
+
+    "customizations": {
+		// Configure properties specific to VS Code.
+		"vscode": {
+		  // Add the IDs of extensions you want installed when the container is created.
+		  "extensions": [
+			"ms-python.python",
+			"ms-azuretools.vscode-docker",
+			"streetsidesoftware.code-spell-checker",
+      "ms-toolsai.jupyter",
+      "ms-toolsai.tensorboard"
+			],
+			
+		}
+	  },
+
+
+}
+
+
+
+
+
+//     in config / data need to set number of workers / batch size 
+
+/*
+
+
+  # outputs matrix of correlation values between channels 
+  python3 channelvit/main/main_correlation.py \
+    trainer.devices=1 \
+    trainer.max_epochs=5 \
+    data@train_data=so2sat_random \
+    data@val_data_dict=[so2sat_random_test] \
+    transformations@train_transformations=so2sat \
+    transformations@val_transformations=so2sat \
+    val_transformations.normalization.mean=[0] \
+    val_transformations.normalization.std=[1] 
+
+
+    # channel based
+python3 channelvit/main/main_supervised.py \
+    trainer.devices=1 \
+    trainer.max_epochs=5 \
+    meta_arch/backbone=hcs_channelvit_small \
+    meta_arch.backbone.args.in_chans=18 \
+    meta_arch.target='label' \
+    meta_arch.num_classes=17\
+    data@train_data=so2sat_random \
+    data@val_data_dict=[so2sat_random_test] \
+    transformations@train_transformations=so2sat \
+    transformations@val_transformations=so2sat 
+
+
+    train_data.so2sat_random.loader.batch_size=1
+
+
+
+
+
+# if epoch is too low may get   assert len(schedule) == epochs * niter_per_ep error
+# not channel based 
+python3 channelvit/main/main_supervised.py \
+    trainer.devices=1 \
+    trainer.max_epochs=50 \
+    meta_arch/backbone=hcs_vit_small \
+    meta_arch.backbone.args.in_chans=18 \
+    meta_arch.backbone.args.patch_size=8 \
+    meta_arch.target='label' \
+    meta_arch.num_classes=17 \
+    data@train_data=so2sat_random \
+    data@val_data_dict=[so2sat_random_test] \
+    transformations@train_transformations=so2sat \
+    transformations@val_transformations=so2sat 
+
+   
+    train_data.jumpcp.loader.batch_size=32 \
+
+
+
+
+    */

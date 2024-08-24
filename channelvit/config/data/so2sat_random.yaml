@@ -1,7 +1,7 @@
 so2sat:
   name: So2Sat
   args:
-    path: path_to_so2sat_random_train
+    path: /workspaces/so2sat/m1613658/random/training.h5
       
     split: train
 
@@ -30,9 +30,9 @@ so2sat:
 
   # training data loader configuration
   loader:
-    num_workers: 32
-    batch_size: 32
-    pin_memory: True
+    num_workers: 1 # set to 32 
+    batch_size: 1 # set to 32 
+    pin_memory: False
     drop_last: False
     shuffle: True
 
